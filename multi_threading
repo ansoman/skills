@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+"""
+  Created on   :2019/11/8 16:41
+  author       : fab
+  filename     : thread_subclass.py
+"""
+from threading import Thread
+from time import ctime
+from time import sleep
+import numpy as np
+
+
+class MyThread(Thread):
+    # func:该参数是多线程执行的函数
+    # args:func函数的参数列表，多个参数的列表
+    # name:名称
+    def __init__(self, func, args, name):
+        # MyThread子类的构造函数必须先调用其基类的构造函数
+        Thread.__init__(self)
+        self.func = func
+        self.args = args
+        self.name = name
+
+    # 必须在子类中定义run()方法
+    def run(self):
+        self.func(*self.args)
+
+
+def loop(nloop, secs):
+    print('start loop ', nloop, ' at: ', ctime())
+    sleep(secs)
+    print('end loop ', nloop, ' at: ', ctime())
+
+
+def multi_task(second):
+    threads = []
+    for i in range(len(second)):
+        thread = MyThread(loop, (i, second[i]), '')
+        threads.append(thread)
+
+    # 启动线程
+    for i in range(len(second)):
+        threads[i].start()
+        sleep(0.001)
+
+    for i in range(len(second)):
+        threads[i].join()
+
+
+if __name__ == '__main__':
+    ntables = 4
+    seconds = [4] * ntables
+    # seconds = np.arange(ntables)
+    print(seconds)
+
+    # suppose n tables to recognize
+    batch = 4
+    epochs = int(ntables/batch)
+    print("-" * 20)
+    for epoch in range(epochs):
+        print('start main at: ', ctime(), "epoch=", epoch)
+        multi_task(seconds[epoch*batch:(epoch+1)*batch])
+        print('end main at: ', ctime(), "epoch=", epoch)
+    if batch * epochs < ntables:
+        print('start main at: ', ctime(), "剩余未识别的")
+        multi_task(seconds[epochs*batch:])
+        print('end main at: ', ctime(), "epoch=", epoch)
+    print("-" * 20)
+    print("All Finished!")
+
