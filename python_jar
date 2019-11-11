@@ -1,0 +1,47 @@
+#!/usr/bin/env python 
+# -*- coding:utf-8 -*-
+"""
+Created on Tue Dec 25 11:32:40 2018
+
+@author: fab
+"""
+from jpype import *
+
+
+startJVM("C:/Program Files/Java/jdk1.8.0_191/jre/bin/server/jvm.dll",
+         "-ea",
+         "-Djava.class.path=%s" % ("C:/Users/fab/Desktop/JpypeDemo.jar"))
+
+# param1 : jvm在本机的地址
+# param2 : 不知，但是要加；
+# param3 : jar包的路径；
+# 这个 startJVM 函数作用是加载 Java 虚拟机，其第一个参数必须是你的 Java 的 jdk 的安装位置，每个人的安装位置不一样，
+# 我的地址就是上面加粗的那一段（注！！！有的教程上说可以直接通过 getDefaultJVMPath() 函数获取 Java 地址，不建议用！
+# 不建议用！不建议用！因为这个函数获得的地址很有可能是电脑自带的 oracle 版的 Java，并非我们自己安装的 Java，
+# 这样由于环境变量的问题会导致报错！）;  第二个参数意译不明，反正加上就对了 ;  第三个参数是你打包好的 jar 包所在的绝对路径，
+# 可以看到我将 JpypeDemo.jar 和前面所得到的当前目录的路径结合起来。
+
+JDClass = JClass("JpypeDemo")  # 申请一个 Java 类（神奇～）
+
+jd = JDClass()
+jprint = java.lang.System.out.println   # 申请 Java 输出类的输出函数
+b = jd.sayHello(" waw")             # 调用该类中的 sayHello 函数，并用 Java 输出函数打印 Java 返回值
+print(b)
+a = jd.calc(2, 4)                   # 调用该类中的求和函数，并用 Java 输出函数打印 Java 返回值
+print(a)
+
+# 关闭 Java 虚拟机，可写可不写，不写会在程序结束时自动关闭
+shutdownJVM()
+
+"""
+public class JpypeDemo {
+    public static String sayHello(String user){        //注意！作为被 python调用的接口函数，需要是静态的，否则 python 端会报错
+        return "hello" + user;
+    }
+    public static int calc(int a, int b){                        //注意！作为被 python 调用的接口函数，需要是静态的，否则 python 端会报错
+        return a + b;
+    }
+    public static void main(String[] args){  
+    }
+}
+"""
