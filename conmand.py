@@ -25,10 +25,12 @@ command1 = "spark-submit --master local[3] \
 --conf spark.debug.maxToStringFields=200 \
 --conf spark.pyspark.python=/home/admin/anaconda3/envs/python-3.6-cxd/bin/python \
 --conf spark.pyspark.driver.python=/home/admin/anaconda3/envs/python-3.6-cxd/bin/python \
-/home/admin/mqf/tools//writeHive.py"
+/home/admin/mqf/tools/writeHive.py"
 
 os.system(command1)
 
 """
-
+通过python写数据到hive
+writeHive.py通过该脚本处理完数据以及编写写入数据的功能
+执行该脚本即可把数据写入或者执行command.sh脚本
 """
